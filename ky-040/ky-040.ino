@@ -4,35 +4,40 @@ void setup() {
 
 void loop() {
   readRotary();
+  readSwitch();
 }
 
-int pinA = 3; // Connected pin number to CLK on KY-040
-int pinB = 4; // Connected pin numbder to DT on KY-040
+int pinCLK = 2; // Connected pin number to CLK on KY-040
+int pinDT = 3; // Connected pin numbder to DT on KY-040
+int pinSW = 4; // Connected pin numbder to SW on KY-040
 
 int lastVal;
 boolean isClockwise;
 int encoderPosCount = 0;
 
 void setupRotary() {
-  pinMode(pinA,INPUT);
-  pinMode(pinB,INPUT);
+  pinMode(pinCLK,INPUT);
+  pinMode(pinDT,INPUT);
+  pinMode(pinSW,INPUT);
+  
   // Read Pin A
   // Whatever state it's in will reflect the last position
-  lastVal = digitalRead(pinA);
+  lastVal = digitalRead(pinCLK);
+  
   Serial.begin(9600);
 }
 
 void readRotary() {
-  int aVal = digitalRead(pinA);
+  int clkVal = digitalRead(pinCLK);
 
-  if (aVal == lastVal) {
+  if (clkVal == lastVal) {
     return;
   }
   
   // Means the knob is rotating
   // If the knob is rotating, we need to determine direction
   // We do that by reading pin B.
-  if (digitalRead(pinB) != aVal) { // Means pin A Changed first - We're Rotating Clockwise
+  if (digitalRead(pinDT) != clkVal) { // Means pin A Changed first - We're Rotating Clockwise
     isClockwise = true;
     encoderPosCount ++;
   } else { // Otherwise B changed first and we're moving CCW
@@ -48,5 +53,14 @@ void readRotary() {
   }
   Serial.print("Encoder Position: ");
   Serial.println(encoderPosCount);
-  lastVal = aVal;
+  lastVal = clkVal;
+}
+
+
+void readSwitch() {
+  int swVal = digitalRead(pinSW);
+
+  if (swVal == LOW) {
+    Serial.println("switch pushed");
+  }
 }
