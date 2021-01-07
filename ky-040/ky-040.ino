@@ -1,3 +1,8 @@
+#define pinCLK 2 // Connected pin number to CLK on KY-040
+#define pinDT 3 // Connected pin numbder to DT on KY-040
+#define pinSW 4 // Connected pin numbder to SW on KY-040
+#define minSwitchMs 100 // 
+
 void setup() {
   setupRotary();
 }
@@ -7,15 +12,12 @@ void loop() {
   readSwitch();
 }
 
-int pinCLK = 2; // Connected pin number to CLK on KY-040
-int pinDT = 3; // Connected pin numbder to DT on KY-040
-int pinSW = 4; // Connected pin numbder to SW on KY-040
-
 int lastRotaryVal;
 boolean isClockwise;
 int encoderPosCount = 0;
 
 int lastSwitchVal;
+unsigned long lastSwitchMs = 0;
 
 void setupRotary() {
   pinMode(pinCLK,INPUT);
@@ -64,11 +66,17 @@ void readSwitch() {
     return;
   }
 
+  if (millis() < lastSwitchMs + minSwitchMs) {
+    return;
+  }
+
+  Serial.print("Switch: ");
   if (val == LOW) {
-    Serial.println("Switch pushed");
+    Serial.println("pushed");
   } else {
-    Serial.println("Switch released");
+    Serial.println("released");
   }
 
   lastSwitchVal = val;
+  lastSwitchMs = millis();
 }
