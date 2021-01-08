@@ -1,7 +1,7 @@
 #define ROTARTY_PIN_CLK 2 // Connected pin number to CLK on KY-040
 #define ROTARTY_PIN_DT 3 // Connected pin numbder to DT on KY-040
 #define ROTARTY_PIN_SW 4 // Connected pin numbder to SW on KY-040
-#define ROTARTY_BTN_MIN_MS 100 // Mininum button recognition milli second
+#define ROTARTY_BTN_RATE_MS 100 // Mininum button recognition milli second
 
 void setup() {
   setupRotary();
@@ -70,7 +70,7 @@ void readRotaryButton() {
     return;
   }
 
-  if (millis() < lastRotaryButtonMs + ROTARTY_BTN_MIN_MS) {
+  if (millis() < lastRotaryButtonMs + ROTARTY_BTN_RATE_MS) {
     return;
   }
 
