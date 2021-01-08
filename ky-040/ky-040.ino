@@ -5,6 +5,9 @@
 
 void setup() {
   setupRotary();
+  setupRotaryButton();
+  
+  Serial.begin(9600);
 }
 
 void loop() {
@@ -22,12 +25,8 @@ unsigned long lastRotaryButtonMs = 0;
 void setupRotary() {
   pinMode(ROTARTY_PIN_CLK,INPUT);
   pinMode(ROTARTY_PIN_DT,INPUT);
-  pinMode(ROTARTY_PIN_SW,INPUT);
   
   lastRotaryVal = digitalRead(ROTARTY_PIN_CLK);
-  lastRotaryButtonVal = digitalRead(ROTARTY_PIN_SW);
-  
-  Serial.begin(9600);
 }
 
 void readRotary() {
@@ -58,6 +57,11 @@ void readRotary() {
   lastRotaryVal = val;
 }
 
+void setupRotaryButton() {
+  pinMode(ROTARTY_PIN_SW,INPUT);
+  
+  lastRotaryButtonVal = digitalRead(ROTARTY_PIN_SW);
+}
 
 void readRotaryButton() {
   int val = digitalRead(ROTARTY_PIN_SW);
