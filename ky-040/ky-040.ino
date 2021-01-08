@@ -1,7 +1,7 @@
-#define pinCLK 2 // Connected pin number to CLK on KY-040
-#define pinDT 3 // Connected pin numbder to DT on KY-040
-#define pinSW 4 // Connected pin numbder to SW on KY-040
-#define minSwitchMs 100 // 
+#define ROTARTY_PIN_CLK 2 // Connected pin number to CLK on KY-040
+#define ROTARTY_PIN_DT 3 // Connected pin numbder to DT on KY-040
+#define ROTARTY_PIN_SW 4 // Connected pin numbder to SW on KY-040
+#define ROTARTY_BTN_MIN_MS 100 // Mininum button recognition milli second
 
 void setup() {
   setupRotary();
@@ -9,35 +9,35 @@ void setup() {
 
 void loop() {
   readRotary();
-  readSwitch();
+  readRotaryButton();
 }
 
 int lastRotaryVal;
 boolean isClockwise;
 int encoderPosCount = 0;
 
-int lastSwitchVal;
-unsigned long lastSwitchMs = 0;
+int lastRotaryButtonVal;
+unsigned long lastRotaryButtonMs = 0;
 
 void setupRotary() {
-  pinMode(pinCLK,INPUT);
-  pinMode(pinDT,INPUT);
-  pinMode(pinSW,INPUT);
+  pinMode(ROTARTY_PIN_CLK,INPUT);
+  pinMode(ROTARTY_PIN_DT,INPUT);
+  pinMode(ROTARTY_PIN_SW,INPUT);
   
-  lastRotaryVal = digitalRead(pinCLK);
-  lastSwitchVal = digitalRead(pinSW);
+  lastRotaryVal = digitalRead(ROTARTY_PIN_CLK);
+  lastRotaryButtonVal = digitalRead(ROTARTY_PIN_SW);
   
   Serial.begin(9600);
 }
 
 void readRotary() {
-  int val = digitalRead(pinCLK);
+  int val = digitalRead(ROTARTY_PIN_CLK);
 
   if (val == lastRotaryVal) {
     return;
   }
   
-  if (digitalRead(pinDT) != val) {
+  if (digitalRead(ROTARTY_PIN_DT) != val) {
     isClockwise = true;
     encoderPosCount ++;
   } else {
@@ -59,14 +59,14 @@ void readRotary() {
 }
 
 
-void readSwitch() {
-  int val = digitalRead(pinSW);
+void readRotaryButton() {
+  int val = digitalRead(ROTARTY_PIN_SW);
 
-  if (val == lastSwitchVal) {
+  if (val == lastRotaryButtonVal) {
     return;
   }
 
-  if (millis() < lastSwitchMs + minSwitchMs) {
+  if (millis() < lastRotaryButtonMs + ROTARTY_BTN_MIN_MS) {
     return;
   }
 
@@ -77,6 +77,6 @@ void readSwitch() {
     Serial.println("released");
   }
 
-  lastSwitchVal = val;
-  lastSwitchMs = millis();
+  lastRotaryButtonVal = val;
+  lastRotaryButtonMs = millis();
 }
