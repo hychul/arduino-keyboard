@@ -14,6 +14,7 @@
 #define ROW_2 A4
 #define ROW_3 A5
 #define ROW_4 14
+
 #define COL_0 11
 #define COL_1 2
 #define COL_2 3
@@ -22,7 +23,7 @@
 #define COL_5 6
 #define COL_6 7
 #define COL_7 8
-#define COL_8 9
+#define COL_8 9 
 #define COL_9 10
 #define COL_10 12
 #define COL_11 15
@@ -38,7 +39,7 @@ unsigned char keys[5][15] = {
   {KEY_TAB, 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', '\\', KEY_DELETE},
   {KEY_CAPS_LOCK, 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', '\0', KEY_RETURN, '\0'},
   {KEY_LEFT_SHIFT, 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', '\0', KEY_RIGHT_SHIFT, '\0', KEY_UP_ARROW},
-  {KEY_LEFT_CTRL, KEY_LEFT_GUI, KEY_LEFT_ALT, '\0', '\0', ' ', '\0', '\0', '\0',  KEY_RIGHT_ALT, KEY_RIGHT_CTRL, '\0', KEY_LEFT_ARROW, KEY_DOWN_ARROW, KEY_RIGHT_ARROW}
+  {KEY_LEFT_CTRL, KEY_LEFT_GUI, KEY_LEFT_ALT, '\0', '\0', ' ', '\0', '\0', '\0',  KEY_RIGHT_ALT, KEY_RIGHT_CTRL, '^', KEY_LEFT_ARROW, KEY_DOWN_ARROW, KEY_RIGHT_ARROW}
 };
 
 unsigned char fnKeys[5][15] = {
@@ -46,17 +47,22 @@ unsigned char fnKeys[5][15] = {
   {KEY_TAB, 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', '\\', KEY_DELETE},
   {KEY_CAPS_LOCK, 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', '\0', KEY_RETURN, '\0'},
   {KEY_LEFT_SHIFT, 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', '\0', KEY_RIGHT_SHIFT, '\0', KEY_UP_ARROW},
-  {KEY_LEFT_CTRL, KEY_LEFT_GUI, KEY_LEFT_ALT, '\0', '\0', ' ', '\0', '\0', '\0',  KEY_RIGHT_ALT, KEY_RIGHT_CTRL, '\0', KEY_LEFT_ARROW, KEY_DOWN_ARROW, KEY_RIGHT_ARROW}
+  {KEY_LEFT_CTRL, KEY_LEFT_GUI, KEY_LEFT_ALT, '\0', '\0', ' ', '\0', '\0', '\0',  KEY_RIGHT_ALT, KEY_RIGHT_CTRL, '^', KEY_LEFT_ARROW, KEY_DOWN_ARROW, KEY_RIGHT_ARROW}
 };
 
-bool keyDowns[5][15] = {
-  {false,}, {false,}, {false,}, {false,}, {false,}
+char keyDowns[5][15] = {
+  {'\0',}, {'\0',}, {'\0',}, {'\0',}, {'\0',}
 };
-
-bool isFnPressed = false; // r: 4, c: 11
 
 void setup() {
-  // put your setup code here, to run once:
+  setupKeyboard();
+}
+
+void loop() {
+  readKeyboard();
+}
+
+void setupKeyboard() {
   for (char x =0; x < 5; x++) {
     pinMode(rows[x], INPUT_PULLUP);
   }
@@ -69,33 +75,60 @@ void setup() {
   Keyboard.begin();
 }
 
-void loop() {
+void readKeyboard() {
   for (char c = 0; c < 15; c++) {
     digitalWrite(columns[c], LOW);
     
     for (char r = 0; r < 5; r++) {
       bool isPressed = !digitalRead(rows[r]);
-      
-      if (r == ROW_4 && c == COL_11) {
-        isFnPressed = isPressed;
-      }
-      
-      unsigned char ch = isFnPressed ? fnKeys[r][c] : keys[r][c];
-      
-      if (ch == '\0') {
-        continue;
-      }
-      
-      if (isPressed) {
-        Keyboard.press(ch);
-        keyDowns[r][c] = true;
-      } else if (keyDowns[r][c]) {
-        Keyboard.release(keys[r][c]);
-        Keyboard.release(fnKeys[r][c]);
-        keyDowns[r][c] = false;
-      }
+
+      readKey(r, c, isPressed);
     }
     
     digitalWrite(columns[c], HIGH);
   }
+}
+
+void readKey(char r, char c, bool isPressed) {
+  unsigned char ch = updateKeyDown(r, c, isPressed);
+  
+  if (ch == '\0' || ch == '^') {
+    return;
+  }
+  
+  if (isPressed) {
+    Keyboard.press(ch);
+  } else if (!isKeyDown(r, c)) {
+    Keyboard.release(ch);
+  }
+}
+
+bool isKeyDown(char r, char c) {
+  return keyDowns[r][c] != '\0';
+}
+
+bool isFnDown() {
+  return isKeyDown(4, 11);
+}
+
+bool isRightShiftDown() {
+  return isKeyDown(3, 12);
+}
+
+char updateKeyDown(char r, char c, bool isPressed) {
+  if (isPressed == isKeyDown(r, c)) {
+    return keyDowns[r][c];
+  }
+
+  if (isPressed) {
+    if (r == 0 && c == 0 && isRightShiftDown()) {
+      keyDowns[r][c] = '~';
+    } else {
+      keyDowns[r][c] = isFnDown() ? fnKeys[r][c] : keys[r][c];
+    }
+  } else {
+    keyDowns[r][c] = '\0';
+  }
+  
+  return keyDowns[r][c];
 }
