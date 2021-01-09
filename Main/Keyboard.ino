@@ -38,11 +38,13 @@
 int rows[] = {ROW_0, ROW_1, ROW_2, ROW_3, ROW_4};
 int columns[] = {COL_0, COL_1, COL_2, COL_3, COL_4, COL_5, COL_6, COL_7, COL_8, COL_9, COL_10, COL_11, COL_12, COL_13, COL_14};
 
-void (*actions[6])() = {mouseMoveUp, mouseMoveDown, mouseMoveLeft, mouseMoveRight, mouseLeftClick, mouseRightClick};
-
 struct Key {
   unsigned char ch;
   unsigned char action;
+
+  bool isDown() {
+    return ch != '\0' || action != 0;
+  }
 
   bool isAction() {
     return action != 0;
@@ -53,6 +55,11 @@ struct Key {
       return '!';
     }
     return ch;
+  }
+
+  void init() {
+    ch = '\0';
+    action = 0;
   }
 };
 
@@ -80,10 +87,19 @@ Key keys[3][5][15] = {
   }
 };
 
+void (*actions[2][6])() = {
+  {mouseMoveUp, mouseMoveDown, mouseMoveLeft, mouseMoveRight, mouseLeftPress, mouseRightPress},
+  {mouseMoveDown, mouseMoveUp, mouseMoveRight, mouseMoveLeft, mouseLeftRelease, mouseRightRelease}
+};
+
 Key tildeKey = {'~', 0};
 
-char keyDowns[5][15] = {
-  {'\0',}, {'\0',}, {'\0',}, {'\0',}, {'\0',}
+Key downKeys[5][15] = {
+  {{'\0', 0}, {'\0', 0}, {'\0', 0}, {'\0', 0}, {'\0', 0}, {'\0', 0}, {'\0', 0}, {'\0', 0}, {'\0', 0}, {'\0', 0}, {'\0', 0}, {'\0', 0}, {'\0', 0}, {'\0', 0}, {'\0', 0}},
+  {{'\0', 0}, {'\0', 0}, {'\0', 0}, {'\0', 0}, {'\0', 0}, {'\0', 0}, {'\0', 0}, {'\0', 0}, {'\0', 0}, {'\0', 0}, {'\0', 0}, {'\0', 0}, {'\0', 0}, {'\0', 0}, {'\0', 0}},
+  {{'\0', 0}, {'\0', 0}, {'\0', 0}, {'\0', 0}, {'\0', 0}, {'\0', 0}, {'\0', 0}, {'\0', 0}, {'\0', 0}, {'\0', 0}, {'\0', 0}, {'\0', 0}, {'\0', 0}, {'\0', 0}, {'\0', 0}},
+  {{'\0', 0}, {'\0', 0}, {'\0', 0}, {'\0', 0}, {'\0', 0}, {'\0', 0}, {'\0', 0}, {'\0', 0}, {'\0', 0}, {'\0', 0}, {'\0', 0}, {'\0', 0}, {'\0', 0}, {'\0', 0}, {'\0', 0}},
+  {{'\0', 0}, {'\0', 0}, {'\0', 0}, {'\0', 0}, {'\0', 0}, {'\0', 0}, {'\0', 0}, {'\0', 0}, {'\0', 0}, {'\0', 0}, {'\0', 0}, {'\0', 0}, {'\0', 0}, {'\0', 0}, {'\0', 0}}
 };
 
 int keyLayer;
@@ -118,43 +134,17 @@ void updateKeyboard() {
 }
 
 void updateKey(char r, char c, bool isPressed) {
-  bool isChanged = isPressed != isKeyDown(r, c);
+  bool isChanged = isPressed != downKeys[r][c].isDown();
 
   if (!isChanged) {
     return;
   }
 
   if (isPressed) {
-    Key key = getKey(r, c);
-    unsigned char ch = key.getCh();
-  
-    if (ch == '\0' || ch == '^') {
-      return;
-    }
-
-    if (ch == '!') {
-      (*actions[key.action - 1])();
-      return;
-    }
-    
-    keyDowns[r][c] = ch;
-    Keyboard.press(ch);
+    pressKey(r, c);
   } else {
-    Keyboard.release(keyDowns[r][c]);
-    keyDowns[r][c] = '\0';
+    releaseKey(r, c);
   }
-}
-
-bool isKeyDown(char r, char c) {
-  return keyDowns[r][c] != '\0';
-}
-
-bool isFnDown() {
-  return isKeyDown(4, 11);
-}
-
-bool isRightShiftDown() {
-  return isKeyDown(3, 12);
 }
 
 struct Key getKey(char r, char c) {
@@ -168,4 +158,43 @@ struct Key getKey(char r, char c) {
     }
     
     return keys[keyLayer][r][c];
+}
+
+bool isRightShiftDown() {
+  return downKeys[3][12].isDown();
+}
+
+bool isFnDown() {
+  return downKeys[4][11].isDown();
+}
+
+void pressKey(char r, char c) {
+    Key key = getKey(r, c);
+    unsigned char ch = key.getCh();
+    
+    downKeys[r][c] = key;
+    
+    if (key.isAction()) {
+      (*actions[0][key.action - 1])();
+      return;
+    } else if (ch == '\0' || ch == '^') {
+      return;
+    } else {
+      Keyboard.press(ch);
+    }
+}
+
+void releaseKey(char r, char c) {
+    Key key = downKeys[r][c];
+    unsigned char ch = key.getCh();
+    
+    downKeys[r][c].init();
+    
+    if (key.isAction()) {
+      (*actions[1][key.action - 1])();
+    } else if (ch == '\0' || ch == '^') {
+      return;
+    }  else {
+      Keyboard.release(ch);
+    }
 }

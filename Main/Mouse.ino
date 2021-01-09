@@ -9,8 +9,8 @@
  
 #include <Mouse.h>
 
-signed char mouseX;
-signed char mouseY;
+signed char mouseX = 0;
+signed char mouseY = 0;
 signed char mouseSpeed = 3;
 
 void setupMouse() {
@@ -26,25 +26,33 @@ void updateMouse() {
 }
 
 void mouseMoveUp() {
-  
+  mouseY += mouseSpeed;
 }
 
 void mouseMoveDown() {
-  
+  mouseY -= mouseSpeed;
 }
 
 void mouseMoveLeft() {
-  
+  mouseX -= mouseSpeed;
 }
 
 void mouseMoveRight() {
-  
+  mouseX += mouseSpeed;
 }
 
-void mouseLeftClick() {
-  
+void mouseLeftPress() {
+  Mouse.press(MOUSE_LEFT);
 }
 
-void mouseRightClick() {
-  
+void mouseLeftRelease() {
+  Mouse.release(MOUSE_LEFT);
+}
+
+void mouseRightPress() {
+  Mouse.press(MOUSE_RIGHT);
+}
+
+void mouseRightRelease() {
+  Mouse.release(MOUSE_RIGHT);
 }
