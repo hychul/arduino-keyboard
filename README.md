@@ -1,4 +1,5 @@
 # Arduino Keyboard Project
+![version](https://img.shields.io/badge/Version-1.0–SNAPSHOT-green.svg?style=flat-square) ![license](https://img.shields.io/badge/License-BEER–WARE-orange.svg?style=flat-square)
 
 Custom keyboard based on arduino board.
 
