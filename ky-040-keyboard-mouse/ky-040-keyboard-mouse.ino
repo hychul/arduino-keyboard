@@ -19,8 +19,6 @@
 void setup() {
   setupRotary();
   setupRotaryButton();
-  
-  Serial.begin(9600);
 }
 
 void loop() {
