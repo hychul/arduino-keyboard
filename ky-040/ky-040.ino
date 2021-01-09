@@ -11,8 +11,8 @@ void setup() {
 }
 
 void loop() {
-  readRotary();
-  readRotaryButton();
+  updateRotary();
+  updateRotaryButton();
 }
 
 int lastRotaryVal;
@@ -29,7 +29,7 @@ void setupRotary() {
   lastRotaryVal = digitalRead(ROTARTY_PIN_CLK);
 }
 
-void readRotary() {
+void updateRotary() {
   int val = digitalRead(ROTARTY_PIN_CLK);
 
   if (val == lastRotaryVal) {
@@ -63,7 +63,7 @@ void setupRotaryButton() {
   lastRotaryButtonVal = digitalRead(ROTARTY_PIN_SW);
 }
 
-void readRotaryButton() {
+void updateRotaryButton() {
   int val = digitalRead(ROTARTY_PIN_SW);
 
   if (val == lastRotaryButtonVal) {

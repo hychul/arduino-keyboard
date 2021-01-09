@@ -22,8 +22,8 @@ void setup() {
 }
 
 void loop() {
-  readRotary();
-  readRotaryButton();
+  updateRotary();
+  updateRotaryButton();
 }
 
 int lastRotaryVal;
@@ -42,7 +42,7 @@ void setupRotary() {
   Mouse.begin();
 }
 
-void readRotary() {
+void updateRotary() {
   int val = digitalRead(ROTARTY_PIN_CLK);
 
   if (val == lastRotaryVal) {
@@ -80,7 +80,7 @@ void setupRotaryButton() {
   Keyboard.begin();
 }
 
-void readRotaryButton() {
+void updateRotaryButton() {
   int val = digitalRead(ROTARTY_PIN_SW);
 
   if (val == lastRotaryButtonVal) {
