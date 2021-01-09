@@ -1,0 +1,5 @@
+{
+    "sketch": "keyboard\\keyboard.ino",
+    "port": "COM9",
+    "board": "arduino:avr:leonardo"
+}
