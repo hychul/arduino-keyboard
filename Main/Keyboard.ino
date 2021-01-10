@@ -103,7 +103,7 @@
 int rows[] = {ROW_0, ROW_1, ROW_2, ROW_3, ROW_4};
 int columns[] = {COL_0, COL_1, COL_2, COL_3, COL_4, COL_5, COL_6, COL_7, COL_8, COL_9, COL_10, COL_11, COL_12, COL_13, COL_14};
 
-struct Key {
+typedef struct Key {
   unsigned char ch;
   unsigned char action;
 
