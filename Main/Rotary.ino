@@ -6,22 +6,7 @@
  * this stuff is worth it, you can buy me a beer in return.
  * ----------------------------------------------------------------------------
  */
-
-#define ROTARTY_PIN_CLK 2 // Connected pin number to CLK on KY-040
-#define ROTARTY_PIN_DT 3 // Connected pin numbder to DT on KY-040
-#define ROTARTY_PIN_SW 4 // Connected pin numbder to SW on KY-040
-#define ROTARTY_BTN_RATE_MS 100 // Mininum rotary button recognition milli second
-
-int lastRotaryVal;
-boolean isClockwise;
-int encoderPosCount = 0;
-
-/*
- * +----------------------+
- * |        Rotary        |
- * +----------------------+
- */
-
+ 
 void setupRotary() {
   pinMode(ROTARTY_PIN_CLK,INPUT);
   pinMode(ROTARTY_PIN_DT,INPUT);
@@ -55,41 +40,4 @@ void updateRotary() {
   Serial.println(encoderPosCount);
   
   lastRotaryVal = val;
-}
-
-/*
- * +----------------------+
- * |     Rotary Button    |
- * +----------------------+
- */
-
-int lastRotaryButtonVal;
-unsigned long lastRotaryButtonMs = 0;
-
-void setupRotaryButton() {
-  pinMode(ROTARTY_PIN_SW,INPUT);
-  
-  lastRotaryButtonVal = digitalRead(ROTARTY_PIN_SW);
-}
-
-void updateRotaryButton() {
-  int val = digitalRead(ROTARTY_PIN_SW);
-
-  if (val == lastRotaryButtonVal) {
-    return;
-  }
-
-  if (millis() < lastRotaryButtonMs + ROTARTY_BTN_RATE_MS) {
-    return;
-  }
-
-  Serial.print("Switch: ");
-  if (val == LOW) {
-    Serial.println("pushed");
-  } else {
-    Serial.println("released");
-  }
-
-  lastRotaryButtonVal = val;
-  lastRotaryButtonMs = millis();
 }
