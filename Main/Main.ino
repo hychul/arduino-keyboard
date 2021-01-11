@@ -90,6 +90,9 @@
 #define KEY_SLASH '/'
 #define KEY_SPACE ' '
 
+#define KEY_OPTION KEY_LEFT_ALT
+#define KEY_COMMAND KEY_LEFT_GUI
+
 #define KEY_FUNCTION '^'
 #define KEY_ACTION '!'
 
@@ -107,9 +110,9 @@
  * +----------------------+
  */
  
-extern signed char mouseX = 0;
-extern signed char mouseY = 0;
-extern signed char mouseSpeed = 3;
+signed char mouseX = 0;
+signed char mouseY = 0;
+signed char mouseSpeed = 3;
 
 /*
  * +----------------------+
@@ -120,7 +123,7 @@ extern signed char mouseSpeed = 3;
 int rows[] = {ROW_0, ROW_1, ROW_2, ROW_3, ROW_4};
 int columns[] = {COL_0, COL_1, COL_2, COL_3, COL_4, COL_5, COL_6, COL_7, COL_8, COL_9, COL_10, COL_11, COL_12, COL_13, COL_14};
 
-typedef struct Key {
+struct Key {
   unsigned char ch;
   unsigned char action;
 
@@ -156,7 +159,7 @@ Key keys[3][5][15] = {
     {{KEY_TAB, ACTION_NONE}, {KEY_Q, ACTION_NONE}, {KEY_W, ACTION_NONE}, {KEY_E, ACTION_NONE}, {KEY_R, ACTION_NONE}, {KEY_T, ACTION_NONE}, {KEY_Y, ACTION_NONE}, {KEY_U, ACTION_NONE}, {KEY_I, ACTION_NONE}, {KEY_O, ACTION_NONE}, {KEY_P, ACTION_NONE}, {KEY_LEFT_BRAKET, ACTION_NONE}, {KEY_RIGHT_BRAKET, ACTION_NONE}, {KEY_BACKSLASH, ACTION_NONE}, {KEY_DELETE, ACTION_NONE}},
     {{KEY_CAPS_LOCK, ACTION_NONE}, {KEY_A, ACTION_NONE}, {KEY_S, ACTION_NONE}, {KEY_D, ACTION_NONE}, {KEY_F, ACTION_NONE}, {KEY_G, ACTION_NONE}, {KEY_H, ACTION_NONE}, {KEY_J, ACTION_NONE}, {KEY_K, ACTION_NONE}, {KEY_L, ACTION_NONE}, {KEY_SEMICOLON, ACTION_NONE}, {KEY_QUOTE, ACTION_NONE}, {KEY_NONE, ACTION_NONE}, {KEY_RETURN, ACTION_NONE}, {KEY_NONE, ACTION_NONE}},
     {{KEY_LEFT_SHIFT, ACTION_NONE}, {KEY_Z, ACTION_NONE}, {KEY_X, ACTION_NONE}, {KEY_C, ACTION_NONE}, {KEY_V, ACTION_NONE}, {KEY_B, ACTION_NONE}, {KEY_N, ACTION_NONE}, {KEY_M, ACTION_NONE}, {KEY_COMMA, ACTION_NONE}, {KEY_PERIOD, ACTION_NONE}, {KEY_SLASH, ACTION_NONE}, {KEY_NONE, ACTION_NONE}, {KEY_RIGHT_SHIFT, ACTION_NONE}, {KEY_NONE, ACTION_NONE}, {KEY_UP_ARROW, ACTION_NONE}},
-    {{KEY_LEFT_CTRL, ACTION_NONE}, {KEY_LEFT_GUI, ACTION_NONE}, {KEY_LEFT_ALT, ACTION_NONE}, {KEY_NONE, ACTION_NONE}, {KEY_NONE, ACTION_NONE}, {KEY_SPACE, ACTION_NONE}, {KEY_NONE, ACTION_NONE}, {KEY_NONE, ACTION_NONE}, {KEY_NONE, ACTION_NONE}, {KEY_RIGHT_ALT, ACTION_NONE}, {KEY_RIGHT_CTRL, ACTION_NONE}, {KEY_FUNCTION, ACTION_NONE}, {KEY_LEFT_ARROW, ACTION_NONE}, {KEY_DOWN_ARROW, ACTION_NONE}, {KEY_RIGHT_ARROW, ACTION_NONE}},
+    {{KEY_LEFT_CTRL, ACTION_NONE}, {KEY_OPTION, ACTION_NONE}, {KEY_COMMAND, ACTION_NONE}, {KEY_NONE, ACTION_NONE}, {KEY_NONE, ACTION_NONE}, {KEY_SPACE, ACTION_NONE}, {KEY_NONE, ACTION_NONE}, {KEY_NONE, ACTION_NONE}, {KEY_NONE, ACTION_NONE}, {KEY_COMMAND, ACTION_NONE}, {KEY_OPTION, ACTION_NONE}, {KEY_FUNCTION, ACTION_NONE}, {KEY_LEFT_ARROW, ACTION_NONE}, {KEY_DOWN_ARROW, ACTION_NONE}, {KEY_RIGHT_ARROW, ACTION_NONE}},
   },
   {
     {{KEY_BACKTICK, ACTION_NONE}, {KEY_F1, ACTION_NONE}, {KEY_F2, ACTION_NONE}, {KEY_F3, ACTION_NONE}, {KEY_F4, ACTION_NONE}, {KEY_F5, ACTION_NONE}, {KEY_F6, ACTION_NONE}, {KEY_F7, ACTION_NONE}, {KEY_F8, ACTION_NONE}, {KEY_F9, ACTION_NONE}, {KEY_F10, ACTION_NONE}, {KEY_F11, ACTION_NONE}, {KEY_F12, ACTION_NONE}, {KEY_BACKSPACE, ACTION_NONE}, {KEY_NONE, ACTION_NONE}},
@@ -167,9 +170,13 @@ Key keys[3][5][15] = {
   }
 };
 
-VoidFuncPtr actions[2][6] = {
-  {[]() { mouseY += mouseSpeed; }, []() { mouseY -= mouseSpeed; }, []() { mouseX -= mouseSpeed; }, []() { mouseX += mouseSpeed; }, []() { Mouse.press(MOUSE_LEFT); }, []() { Mouse.press(MOUSE_RIGHT); }},
-  {[]() { mouseY -= mouseSpeed; }, []() { mouseY += mouseSpeed; }, []() { mouseX += mouseSpeed; }, []() { mouseX -= mouseSpeed; }, []() { Mouse.release(MOUSE_LEFT); }, []() { Mouse.release(MOUSE_RIGHT); }}
+VoidFuncPtr actions[6][2] = {
+  {[]() { mouseY += mouseSpeed; }, []() { mouseY -= mouseSpeed; }}, 
+  {[]() { mouseY -= mouseSpeed; }, []() { mouseY += mouseSpeed; }}, 
+  {[]() { mouseX -= mouseSpeed; }, []() { mouseX += mouseSpeed; }},
+  {[]() { mouseX += mouseSpeed; }, []() { mouseX -= mouseSpeed; }},
+  {[]() { Mouse.press(MOUSE_LEFT); }, []() { Mouse.release(MOUSE_LEFT); }},
+  {[]() { Mouse.press(MOUSE_RIGHT); }, []() { Mouse.release(MOUSE_RIGHT); }},
 };
 
 Key tildeKey = {KEY_TILDE, ACTION_NONE};

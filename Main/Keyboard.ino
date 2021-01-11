@@ -61,7 +61,7 @@ void pressKey(char r, char c) {
     } 
     
     if (ch == KEY_ACTION) {
-      (*actions[0][key.action])();
+      (*actions[key.action][0])();
     } else {
       Keyboard.press(ch);
     }
@@ -99,7 +99,7 @@ void releaseKey(char r, char c) {
     }
 
     if (ch == KEY_ACTION) {
-      (*actions[1][key.action])();
+      (*actions[key.action][1])();
     } else {
       Keyboard.release(ch);
     }
