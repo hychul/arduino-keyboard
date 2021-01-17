@@ -9,28 +9,39 @@
  
 #include <Keyboard.h>
 #include <Mouse.h>
+#include <Shifty.h>
  
-#define ROW_0 A2
-#define ROW_1 A3
-#define ROW_2 A4
-#define ROW_3 A5
-#define ROW_4 14
+#define ROW_0 7
+#define ROW_1 8
+#define ROW_2 9
+#define ROW_3 10
+#define ROW_4 11
 
-#define COL_0 11
-#define COL_1 2
-#define COL_2 3
-#define COL_3 4
-#define COL_4 5
-#define COL_5 6
-#define COL_6 7
-#define COL_7 8
-#define COL_8 9 
-#define COL_9 10
-#define COL_10 12
-#define COL_11 15
-#define COL_12 A0
-#define COL_13 13
-#define COL_14 A1
+#define Q0 0
+#define Q1 1
+#define Q2 2
+#define Q3 3
+#define Q4 4
+#define Q5 5
+#define Q6 6
+#define Q7 7
+
+#define COL_0 Q0
+#define COL_1 Q1
+#define COL_2 Q2
+#define COL_3 Q3
+#define COL_4 Q4
+#define COL_5 Q5
+#define COL_6 Q6
+#define COL_7 Q7
+
+#define COL_8 A1
+#define COL_9 A2
+#define COL_10 A3
+#define COL_11 A4
+#define COL_12 A5
+#define COL_13 14
+#define COL_14 15
 
 #define WIN_LAYER 0
 #define MAC_LAYER 1
@@ -106,6 +117,29 @@
 
 /*
  * +----------------------+
+ * |         Main         |
+ * +----------------------+
+ */
+ 
+// TODO: Check pin numbers
+void setup() {
+  setupKeyboard();
+  setupMouse();
+  setupRotary();
+  setupRotaryButton();
+  setupOled();
+}
+
+void loop() {
+  updateKeyboard();
+  updateMouse();
+  updateRotary();
+  updateRotaryButton();
+  updateOled();
+}
+
+/*
+ * +----------------------+
  * |         Mouse        |
  * +----------------------+
  */
@@ -120,8 +154,11 @@ signed char mouseSpeed = 3;
  * +----------------------+
  */
 
+Shifty shift;
+
 int rows[] = {ROW_0, ROW_1, ROW_2, ROW_3, ROW_4};
-int columns[] = {COL_0, COL_1, COL_2, COL_3, COL_4, COL_5, COL_6, COL_7, COL_8, COL_9, COL_10, COL_11, COL_12, COL_13, COL_14};
+int shiftColumns[] = {COL_0, COL_1, COL_2, COL_3, COL_4, COL_5, COL_6, COL_7}; 
+int columns[] = {COL_8, COL_9, COL_10, COL_11, COL_12, COL_13, COL_14};
 
 struct Key {
   unsigned char ch;
@@ -197,9 +234,9 @@ int keyLayer;
  * +----------------------+
  */
 
-#define ROTARTY_PIN_CLK 2 // Connected pin number to CLK on KY-040
-#define ROTARTY_PIN_DT 3 // Connected pin numbder to DT on KY-040
-#define ROTARTY_PIN_SW 4 // Connected pin numbder to SW on KY-040
+#define ROTARTY_PIN_CLK 4 // Connected pin number to CLK on KY-040
+#define ROTARTY_PIN_DT 5 // Connected pin numbder to DT on KY-040
+#define ROTARTY_PIN_SW 6 // Connected pin numbder to SW on KY-040
 #define ROTARTY_BTN_RATE_MS 100 // Mininum rotary button recognition milli second
 
 int lastRotaryVal;
@@ -209,19 +246,11 @@ int encoderPosCount = 0;
 int lastRotaryButtonVal;
 unsigned long lastRotaryButtonMs = 0;
 
-// TODO: Check pin numbers
-void setup() {
-  setupKeyboard();
-  setupMouse();
-  setupRotary();
-  setupRotaryButton();
-  setupOled();
-}
 
-void loop() {
-  updateKeyboard();
-  updateMouse();
-  updateRotary();
-  updateRotaryButton();
-  updateOled();
-}
+/*
+ * +----------------------+
+ * |         Oled         |
+ * +----------------------+
+ */
+ 
+// On an arduino LEONARDO:   2(SDA),  3(SCL)

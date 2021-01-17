@@ -8,28 +8,47 @@
  */
 
 void setupKeyboard() {
+  shift.setBitCount(8);
+  shift.setPins(12, 13, A1);
+  
   keyLayer = WIN_LAYER;
 
-  for (char x =0; x < 5; x++) {
-    pinMode(rows[x], INPUT_PULLUP);
+  for (char i =0; i < 5; i++) {
+    pinMode(rows[i], INPUT_PULLUP);
   }
 
-  for (char x = 0; x < 15; x++) {
-    pinMode(columns[x], OUTPUT);
-    digitalWrite(columns[x], HIGH);
+  for (char i = 0; i < 8; i++) {
+    shift.writeBit(shiftColumns[i], HIGH);
+  }
+
+  for (char i = 0; i < 7; i++) {
+    pinMode(columns[i], OUTPUT);
+    digitalWrite(columns[i], HIGH);
   }
   
   Keyboard.begin();
 }
 
 void updateKeyboard() {
-  for (char c = 0; c < 15; c++) {
+//  for (char c = 0; c < 8; c++) {
+//    shift.writeBit(shiftColumns[c], LOW);
+//    
+//    for (char r = 0; r < 5; r++) {
+//      bool isPressed = !digitalRead(rows[r]);
+//
+//      updateKey(r, c, isPressed);
+//    }
+//    
+//    shift.writeBit(shiftColumns[c], HIGH);
+//  }
+  
+  for (char c = 0; c < 7; c++) {
     digitalWrite(columns[c], LOW);
     
     for (char r = 0; r < 5; r++) {
       bool isPressed = !digitalRead(rows[r]);
 
-      updateKey(r, c, isPressed);
+      updateKey(r, c + 8, isPressed);
     }
     
     digitalWrite(columns[c], HIGH);
@@ -38,6 +57,7 @@ void updateKeyboard() {
 
 void updateKey(char r, char c, bool isPressed) {
   bool isChanged = isPressed != downKeys[r][c].isDown();
+    Serial.println("key update");
 
   if (!isChanged) {
     return;
