@@ -8,20 +8,17 @@
  */
 
 void setupKeyboard() {
-  shift.setBitCount(8);
-  shift.setPins(12, 13, A1);
-  
   keyLayer = WIN_LAYER;
 
-  for (char i =0; i < 5; i++) {
+  for (int i = 0; i < 5; i++) {
     pinMode(rows[i], INPUT_PULLUP);
   }
 
-  for (char i = 0; i < 8; i++) {
-    shift.writeBit(shiftColumns[i], HIGH);
+  for (int i = 0; i < 8; i++) {
+    shift.writeBit(shiftyColumns[i], HIGH);
   }
 
-  for (char i = 0; i < 7; i++) {
+  for (int i = 0; i < 7; i++) {
     pinMode(columns[i], OUTPUT);
     digitalWrite(columns[i], HIGH);
   }
@@ -30,22 +27,22 @@ void setupKeyboard() {
 }
 
 void updateKeyboard() {
-//  for (char c = 0; c < 8; c++) {
-//    shift.writeBit(shiftColumns[c], LOW);
-//    
-//    for (char r = 0; r < 5; r++) {
-//      bool isPressed = !digitalRead(rows[r]);
-//
-//      updateKey(r, c, isPressed);
-//    }
-//    
-//    shift.writeBit(shiftColumns[c], HIGH);
-//  }
+  for (int c = 0; c < 8; c++) {
+    shift.writeBit(shiftyColumns[c], LOW);
+    
+    for (int r = 0; r < 5; r++) {
+      bool isPressed = !digitalRead(rows[r]);
+
+      updateKey(r, c, isPressed);
+    }
+    
+    shift.writeBit(shiftyColumns[c], HIGH);
+  }
   
-  for (char c = 0; c < 7; c++) {
+  for (int c = 0; c < 7; c++) {
     digitalWrite(columns[c], LOW);
     
-    for (char r = 0; r < 5; r++) {
+    for (int r = 0; r < 5; r++) {
       bool isPressed = !digitalRead(rows[r]);
 
       updateKey(r, c + 8, isPressed);
@@ -55,7 +52,11 @@ void updateKeyboard() {
   }
 }
 
-void updateKey(char r, char c, bool isPressed) {
+void writeDigitalBit(int pin) {
+  
+}
+
+void updateKey(int r, int c, bool isPressed) {
   bool isChanged = isPressed != downKeys[r][c].isDown();
     Serial.println("key update");
 
@@ -70,7 +71,7 @@ void updateKey(char r, char c, bool isPressed) {
   }
 }
 
-void pressKey(char r, char c) {
+void pressKey(int r, int c) {
     Key key = getKey(r, c);
     unsigned char ch = key.getCh();
     
@@ -87,7 +88,7 @@ void pressKey(char r, char c) {
     }
 }
 
-struct Key getKey(char r, char c) {
+struct Key getKey(int r, int c) {
     if (r == 0 && c == 0 && isRightShiftDown()) {
       return tildeKey;
     }
@@ -108,7 +109,7 @@ bool isFnDown() {
   return downKeys[4][11].isDown();
 }
 
-void releaseKey(char r, char c) {
+void releaseKey(int r, int c) {
     Key key = downKeys[r][c];
     unsigned char ch = key.getCh();
     

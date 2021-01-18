@@ -120,9 +120,13 @@
  * |         Main         |
  * +----------------------+
  */
- 
-// TODO: Check pin numbers
+
+Shifty shift;
+
 void setup() {
+  shift.setBitCount(8);
+  shift.setPins(12, 13, A0);
+  
   setupKeyboard();
   setupMouse();
   setupRotary();
@@ -154,10 +158,8 @@ signed char mouseSpeed = 3;
  * +----------------------+
  */
 
-Shifty shift;
-
 int rows[] = {ROW_0, ROW_1, ROW_2, ROW_3, ROW_4};
-int shiftColumns[] = {COL_0, COL_1, COL_2, COL_3, COL_4, COL_5, COL_6, COL_7}; 
+int shiftyColumns[] = {COL_0, COL_1, COL_2, COL_3, COL_4, COL_5, COL_6, COL_7}; 
 int columns[] = {COL_8, COL_9, COL_10, COL_11, COL_12, COL_13, COL_14};
 
 struct Key {
