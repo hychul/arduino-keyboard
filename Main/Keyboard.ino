@@ -17,6 +17,7 @@ void setupKeyboard() {
   for (int i = 0; i < 8; i++) {
     shift.writeBit(shiftyColumns[i], HIGH);
   }
+//  writeDigitalBit(-1);
 
   for (int i = 0; i < 7; i++) {
     pinMode(columns[i], OUTPUT);
@@ -29,6 +30,7 @@ void setupKeyboard() {
 void updateKeyboard() {
   for (int c = 0; c < 8; c++) {
     shift.writeBit(shiftyColumns[c], LOW);
+//    writeDigitalBit(c);
     
     for (int r = 0; r < 5; r++) {
       bool isPressed = !digitalRead(rows[r]);
@@ -37,6 +39,7 @@ void updateKeyboard() {
     }
     
     shift.writeBit(shiftyColumns[c], HIGH);
+//    writeDigitalBit(-1);
   }
   
   for (int c = 0; c < 7; c++) {
@@ -53,7 +56,15 @@ void updateKeyboard() {
 }
 
 void writeDigitalBit(int pin) {
-  
+  shift.batchWriteBegin();
+  for (int i = 0; i < 8; i++) {
+    if (i == pin) {
+      shift.writeBit(shiftyColumns[i], LOW);
+    } else {
+      shift.writeBit(shiftyColumns[i], HIGH);
+    }
+  }
+  shift.batchWriteEnd();
 }
 
 void updateKey(int r, int c, bool isPressed) {
