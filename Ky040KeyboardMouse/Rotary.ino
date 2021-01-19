@@ -29,8 +29,10 @@ void updateRotary() {
   Serial.print("Rotated: ");
   if (isClockwise) {
     Serial.println("clockwise");
+    Mouse.move(10, 0);
   } else {
     Serial.println("counterclockwise");
+    Mouse.move(-10, 0);
   }
   
   Serial.print("Encoder Position: ");
