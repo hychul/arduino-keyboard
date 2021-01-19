@@ -14,12 +14,7 @@ void setupKeyboard() {
     pinMode(rows[i], INPUT_PULLUP);
   }
 
-  for (int i = 0; i < 8; i++) {
-    shift.writeBit(shiftyColumns[i], HIGH);
-  }
-//  writeDigitalBit(-1);
-
-  for (int i = 0; i < 7; i++) {
+  for (int i = 0; i < 15; i++) {
     pinMode(columns[i], OUTPUT);
     digitalWrite(columns[i], HIGH);
   }
@@ -28,9 +23,8 @@ void setupKeyboard() {
 }
 
 void updateKeyboard() {
-  for (int c = 0; c < 8; c++) {
-    shift.writeBit(shiftyColumns[c], LOW);
-//    writeDigitalBit(c);
+  for (int c = 0; c < 15; c++) {
+    digitalWrite(columns[c], LOW);
     
     for (int r = 0; r < 5; r++) {
       bool isPressed = !digitalRead(rows[r]);
@@ -38,38 +32,12 @@ void updateKeyboard() {
       updateKey(r, c, isPressed);
     }
     
-    shift.writeBit(shiftyColumns[c], HIGH);
-//    writeDigitalBit(-1);
-  }
-  
-  for (int c = 0; c < 7; c++) {
-    digitalWrite(columns[c], LOW);
-    
-    for (int r = 0; r < 5; r++) {
-      bool isPressed = !digitalRead(rows[r]);
-
-      updateKey(r, c + 8, isPressed);
-    }
-    
     digitalWrite(columns[c], HIGH);
   }
 }
 
-void writeDigitalBit(int pin) {
-  shift.batchWriteBegin();
-  for (int i = 0; i < 8; i++) {
-    if (i == pin) {
-      shift.writeBit(shiftyColumns[i], LOW);
-    } else {
-      shift.writeBit(shiftyColumns[i], HIGH);
-    }
-  }
-  shift.batchWriteEnd();
-}
-
 void updateKey(int r, int c, bool isPressed) {
   bool isChanged = isPressed != downKeys[r][c].isDown();
-    Serial.println("key update");
 
   if (!isChanged) {
     return;
@@ -84,18 +52,18 @@ void updateKey(int r, int c, bool isPressed) {
 
 void pressKey(int r, int c) {
     Key key = getKey(r, c);
-    unsigned char ch = key.getCh();
+    unsigned int code = key.getCode();
     
     downKeys[r][c] = key;
     
-    if (ch == KEY_NONE || ch == KEY_FUNCTION) {
+    if (code == KEY_NONE || code == KEY_FUNCTION) {
       return;
     } 
     
-    if (ch == KEY_ACTION) {
+    if (code == KEY_ACTION) {
       (*actions[key.action][0])();
     } else {
-      Keyboard.press(ch);
+      Keyboard.press(code);
     }
 }
 
@@ -105,8 +73,8 @@ struct Key getKey(int r, int c) {
     }
 
     if (isFnDown()) {
-      char ch = keys[FN_LAYER][r][c].getCh();
-      return ch != KEY_NONE ? keys[FN_LAYER][r][c] : keys[keyLayer][r][c];
+      unsigned int code = keys[FN_LAYER][r][c].getCode();
+      return code != KEY_NONE ? keys[FN_LAYER][r][c] : keys[keyLayer][r][c];
     }
     
     return keys[keyLayer][r][c];
@@ -122,17 +90,17 @@ bool isFnDown() {
 
 void releaseKey(int r, int c) {
     Key key = downKeys[r][c];
-    unsigned char ch = key.getCh();
+    unsigned int code = key.getCode();
     
     downKeys[r][c].init();
     
-    if (ch == KEY_NONE || ch == KEY_FUNCTION) {
+    if (code == KEY_NONE || code == KEY_FUNCTION) {
       return;
     }
 
-    if (ch == KEY_ACTION) {
+    if (code == KEY_ACTION) {
       (*actions[key.action][1])();
     } else {
-      Keyboard.release(ch);
+      Keyboard.release(code);
     }
 }
