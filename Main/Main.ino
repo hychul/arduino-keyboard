@@ -179,7 +179,6 @@ int encoderPosCount = 0;
 int lastRotaryButtonVal;
 unsigned long lastRotaryButtonMs = 0;
 
-
 /*
  * +----------------------+
  * |         Oled         |
@@ -190,5 +189,8 @@ unsigned long lastRotaryButtonMs = 0;
 #define SCREEN_HEIGHT 32 // OLED display height, in pixels
  
 // On an arduino TEENSY 2.0: 6(SDA),  5(SCL)
-#define OLED_RESET     4 // Reset pin # (or -1 if sharing Arduino reset pin)
+#define OLED_RESET     -1 // Reset pin # (or -1 if sharing Arduino reset pin)
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
+
+bool isOledLoaded = false;
+bool isNewFrameReady = false;

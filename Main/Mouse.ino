@@ -16,5 +16,5 @@ void updateMouse() {
     return;
   }
 
-  Mouse.move(mouseX, mouseX, 0);
+  Mouse.move(mouseX, mouseY);
 }
