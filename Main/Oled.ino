@@ -12,6 +12,8 @@ void setupOled() {
 
   isNewFrameReady = true;
 
+  // display.setRotation(2); // rotate oled screen 180 degree
+
   display.clearDisplay();
 }
 
