@@ -8,8 +8,6 @@
  */
 
 void setupKeyboard() {
-  keyLayer = MAC_LAYER;
-
   for (int i = 0; i < 5; i++) {
     pinMode(rows[i], INPUT_PULLUP);
   }
