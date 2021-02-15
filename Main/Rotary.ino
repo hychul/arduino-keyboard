@@ -24,9 +24,15 @@ void updateRotary() {
   if (digitalRead(ROTARTY_PIN_DT) != val) {
     isClockwise = true;
     encoderPosCount ++;
+
+    Keyboard.press(KEY_MEDIA_VOLUME_INC);
+    Keyboard.release(KEY_MEDIA_VOLUME_INC);
   } else {
     isClockwise = false;
     encoderPosCount--;
+
+    Keyboard.press(KEY_MEDIA_VOLUME_DEC);
+    Keyboard.release(KEY_MEDIA_VOLUME_DEC);
   }
   
   Serial.print("Rotated: ");
