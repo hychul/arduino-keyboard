@@ -198,4 +198,4 @@ unsigned long lastRotaryButtonMs = 0;
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 bool isOledLoaded = false;
-bool isNewFrameReady = false;
+bool isOledValidated = false;

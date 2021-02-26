@@ -10,7 +10,7 @@
 void setupOled() {
   isOledLoaded = display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
 
-  isNewFrameReady = true;
+  isOledValidated = true;
 
   // display.setRotation(2); // rotate oled screen 180 degree
 
@@ -22,7 +22,7 @@ void updateOled() {
     return;
   }
 
-  if (!isNewFrameReady) {
+  if (!isOledValidated) {
     return;
   }
 
@@ -48,7 +48,7 @@ void updateOled() {
 
   display.display();
 
- isNewFrameReady = false;
+ isOledValidated = false;
 }
 
 #define NUMFLAKES     10 // Number of snowflakes in the animation example
